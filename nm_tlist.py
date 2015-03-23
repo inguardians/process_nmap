@@ -58,7 +58,7 @@ TELNET      = ('TELNET','Telnet Servers',[23],['telnet'])
 MAIL        = ('Mail','Mail Servers',[25,110,143,465,587,993,995],['mail','exchange','imap','pop3','smtp'])
 DNS         = ('DNS','Domain Name Services',[53],['dns'])
 FINGER      = ('FINGER','Finger Servers',[79],['finger'])
-WEB         = ('WEB','Web Servers',[80,443,1188,8000,8008,8080,8443], ['http','web','apache','iis'])
+WEB         = ('WEB','Web Servers',[80,443,1188,5800,8000,8008,8080,8443], ['http','web','apache','iis'])
 KERBEROS    = ('DERBEROS','Kerberos Servers',[88,464],['kerberos'])
 MS          = ('MS','Microsoft Services',[135,139,445,1033,5722],['rpc','smb','netbios'])
 LDAP        = ('LDAP','LDAP Servers',[389,636],['ldap'])
@@ -88,6 +88,7 @@ USER_NAME   = None
 USER_PORTS  = []
 USER_SINFO  = []
 PROTO       = 'tcp'
+CHUNK       = 1
 inf         = None
 
 def usage():
@@ -113,7 +114,7 @@ def usage():
 
 # Process options
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "i:n:p:s:x:duolh", ["help","version"])
+    opts, args = getopt.getopt(sys.argv[1:], "i:n:p:c:s:x:duolh", ["help","version"])
 except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -134,6 +135,10 @@ for o, a in opts:
     elif o == "-o":
         # new line separated output
         COMMA = FALSE
+    elif o == "-c":
+        # Get the name of user ports list
+        COMMA = FALSE
+        CHUNK = int(a)
     elif o == "-n":
         # Get the name of user ports list
         USER_NAME = a
@@ -215,9 +220,14 @@ def print_target(inTargs,comma):
                 # print target IP addresses in comma separated list
                 print ','.join(inTargs[tl])
             else:
-                # print target IP address out one per line
-                for IP in inTargs[tl]:
-                    print IP
+                if CHUNK > 1:
+                    # print target IP address out one per line
+                    for IP in range(0,len(inTargs[tl]),CHUNK):
+                        print ' '.join(inTargs[tl][IP:IP+CHUNK])
+                else:
+                    # print target IP address out one per line
+                    for IP in inTargs[tl]:
+                        print IP
             # Flush
             print "\n"
 
