@@ -93,7 +93,7 @@ inf         = None
 
 def usage():
     print "NMap Target List Version: " + VERSION
-    print "Usage:\n nm_tlist.py -i XML_directory [-d] [-u] [-o] [-l] [-x Select_Targets] [-h] [--help] [--version]"
+    print "Usage:\n nm_tlist.py -i XML_directory [-d] [-u] [-o] [-l] [-x Select_Targets] [-c size] [-h] [--help] [--version]"
     print " nm_tlist.py -i XML_directory [-n USER_TARGET_NAME] [-p USER_PORT_LIST] [-s USER_SERVICE_INFO_LIST]"
     print "    -i: Directory containing the NMap XML files.  This is mandatory."
     print "    -d: Debugging mode.  Default is off"
@@ -101,6 +101,7 @@ def usage():
     print "    -o: Output findings one line per host IP address. Default is comma separated list of host IP addresses."
     print "    -x: Select Mode.  User selects from the selection of pregenerated target lists."
     print "        The list should be comma separated with no paces or quotes.  Use -l to print the selection."
+    print "    -c <int>: User sets size of lists to create. Making large lists easier to import into other tools."
     print "    -n: Name of user created target list.  Requires -p or -s for information on ports or service information."
     print "    -p: List of ports for user created target list.  Requires -n and may be used in conjunction with -s."
     print "        The list should be comma separated with no paces or quotes."
@@ -224,6 +225,7 @@ def print_target(inTargs,comma):
                     # print target IP address out one per line
                     for IP in range(0,len(inTargs[tl]),CHUNK):
                         print ' '.join(inTargs[tl][IP:IP+CHUNK])
+                        print ''    # Add a space between prints
                 else:
                     # print target IP address out one per line
                     for IP in inTargs[tl]:
